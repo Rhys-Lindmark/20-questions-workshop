@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>20 Questions with Jev</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>20 Questions <span class="muted">with</span> Jev</h1>
+  <span id="keys"></span>
+</header>
+<p class="asked">Every racer is asked: <b id="asktext"></b></p>
+<p class="muted rules">The secret is one of <span id="count">100</span> things. Code answers from a table, crosses off what no longer fits, and guesses when one thing is left. Racers only pick the next question. Your Level 1 is the exception: it gets "What is your next move?" over every question and guess, with nothing crossed off.</p>
+<section id="picker">
+  <form id="typeany"><input type="text" maxlength="40" autocomplete="off" aria-label="Type anything" placeholder="Type anything: a hedgehog, a teddy bear, lasagna…"><button>Race</button></form>
+  <div class="row"><b>Or race</b><span id="chips"></span></div>
+  <div class="row"><b>Three secrets</b><span id="sets"></span></div>
+</section>
+<section id="controls">
+  <span id="lanepick"></span>
+  <label>Mode <select id="mode">
+    <option value="auto">Auto (replay recorded calls, else live)</option>
+    <option value="live">Live (fresh calls)</option>
+    <option value="replay">Replay only (offline)</option>
+  </select></label>
+  <span id="prepnote" class="muted"></span>
+</section>
+<section id="board"></section>
+<section id="lanes"></section>
+<section id="scores"></section>
+<section id="timeline"></section>
+<footer class="muted">Time is the sum of each racer's own call latencies (wall clock for You); code's moves take no time. Cost is what the calls cost: Jev at $0.042 per million input tokens, the LLMs at OpenRouter's billed cost. A recorded call replays at the speed it was recorded.</footer>
+<script type="module" src="app.js"></script>
+</body>
+</html>

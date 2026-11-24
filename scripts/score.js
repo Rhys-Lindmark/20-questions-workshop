@@ -38,7 +38,7 @@ const x = n => n >= 10 ? n.toFixed(0) + '×' : n.toFixed(1) + '×';
 console.log(`${'Player'.padEnd(w)}${'Set A'.padStart(7)}${'Set B'.padStart(7)}${'Set C'.padStart(7)}${'Turns'.padStart(7)}${'Found'.padStart(7)}${'Time'.padStart(9)}${'Cost'.padStart(11)}${ref ? '   vs Mine: Level 2' : ''}`);
 for (const r of rows) {
   if (r.error) { console.log(`${LANES[r.laneId].label.padEnd(w)}${r.error}`); continue; }
-  const vs = ref && r !== ref ? `   ${x(r.ms / ref.ms)} the time, ${x(r.cost / ref.cost)} the cost` : '';
+  const vs = ref && r !== ref && r.ms ? `   ${x(r.ms / ref.ms)} the time, ${x(r.cost / ref.cost)} the cost` : '';
   console.log(`${LANES[r.laneId].label.padEnd(w)}${r.games.map(g => String(g).padStart(7)).join('')}${String(r.turns).padStart(7)}${`${r.solved}/9`.padStart(7)}${((r.ms / 1000).toFixed(1) + ' s').padStart(9)}${('$' + r.cost.toFixed(4)).padStart(11)}${vs}${r.replayed < r.calls ? `   (${r.calls - r.replayed} live calls)` : ''}`);
 }
 console.log('\nTurns per set: 3 secrets each, 25 for a miss. Time is the sum of each model call\'s latency, as recorded; code\'s moves take no time.');

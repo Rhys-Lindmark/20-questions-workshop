@@ -7,6 +7,7 @@
   "engines": { "node": ">=22" },
   "scripts": {
     "doctor": "node scripts/doctor.js",
+    "app": "node scripts/app.js",
     "play": "node scripts/play.js",
     "score": "node scripts/score.js",
     "build-table": "node scripts/build-table.js",
