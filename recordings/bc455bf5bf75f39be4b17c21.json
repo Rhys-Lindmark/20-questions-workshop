@@ -1,0 +1,1 @@
+{"reply":"Candidates: broom, drum, guitar, mirror.\n\n\"Is it a musical instrument?\" splits them 2 (drum, guitar) vs 2 (broom, mirror), which is an even split.\n\n\"Does it have a handle?\" is less clean: a broom has one, a guitar arguably does not, and a drum and mirror are ambiguous.\n\n30","cost":0.003656,"ms":1485,"recorded_at":"2026-11-24T19:11:57.050Z"}
