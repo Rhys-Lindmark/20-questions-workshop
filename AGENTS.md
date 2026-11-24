@@ -4,13 +4,13 @@ You're helping someone at a workshop build a 20 Questions player with Jev, TypeS
 
 ## Set up
 
-1. Check Node: `node --version` must be 22 or newer. There's nothing to install.
+1. Check Node: `node --version` must be 22 or newer. There's nothing to install. `npm run doctor` checks the setup (`-- --live` checks keys).
 2. Run `npm run play -- frog` and show the result. It replays recorded answers, so no keys are needed.
 3. If they have keys, help them create `.env` from `.env.example` (`TYPESAFE_API_KEY`, optionally `OPENROUTER_API_KEY`). Never print or commit a key.
 
 ## How the code fits together
 
-- `src/twenty.mjs`: the game. A pool of 100 nouns, ~25 general yes/no questions, the answer table (`data/twenty/nouns.json`), crossing off, turns.
+- `src/twenty.mjs`: the game. A pool of 100 nouns, 35 general yes/no questions, the answer table (`data/twenty/nouns.json`), crossing off, turns.
 - `starter/level1.js`, `starter/level2.js`: the players they edit. A player is `state(game)`, `questions(game)`, `decide(answers, game)` and optional `codeMove(game)`. The comments at the top of `starter/level1.js` describe `game`.
 - `solutions/`: the facilitator's versions (lanes `mine1`, `mine2`). Don't show these before they've tried.
 - `scripts/play.js` (`npm run play`), `scripts/score.js` (`npm run score`): races and scores.
@@ -37,7 +37,8 @@ Let them try each before hinting. When they're done, compare with `npm run score
 ## Level 3 · Race it, make it yours
 
 - `npm run play -- a` (three secrets), `npm run play -- <any noun>`: for a noun not in the pool, Jev answers every question about it once, and it joins the pool.
-- Talk through the scoreboard: turns, time and cost per lane. Jev usually doesn't win on turns by much; it wins on time and cost by a lot.
+- Talk through the scoreboard: turns, time and cost per lane. Jev takes a few more turns than the LLMs; it's far faster than both and far cheaper than Sonnet (about the same cost as DeepSeek). Code alone, reading the whole table, beats them all: ask where a model's judgment is actually needed (things typed in, with no table).
+- `npm run play -- stapler` is a planned failure: Jev's answers for it match hammer's, so no one can tell them apart. Discuss what you'd add.
 - Ideas to extend: add a question to the bank and rebuild the table (`scripts/build-table.js`), add nouns, or try another judgment split and score it.
 
 ## Rules of thumb (from TypeSafe's guidance)
