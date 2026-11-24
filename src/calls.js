@@ -7,7 +7,7 @@
 //   mode 'live'   always call (and re-record)
 //   mode 'replay' recordings only; a missing one is an error
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { JEV_URL, OPENROUTER_URL } from './lanes.js';
 
 const ROOT = new URL('../', import.meta.url);
@@ -31,6 +31,7 @@ export const used = new Set();
 export async function call(kind, req, mode = 'auto') {
   const file = new URL(recordingName(req), REC);
   used.add(recordingName(req));
+  if (process.env.RECORDINGS_USED_LOG) appendFileSync(process.env.RECORDINGS_USED_LOG, recordingName(req) + '\n');
   if (mode !== 'live' && existsSync(file)) return { ...JSON.parse(readFileSync(file, 'utf8')), replayed: true };
   const key = kind === 'jev' ? process.env.TYPESAFE_API_KEY : process.env.OPENROUTER_API_KEY;
   const keyName = kind === 'jev' ? 'TYPESAFE_API_KEY' : 'OPENROUTER_API_KEY';

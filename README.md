@@ -17,7 +17,9 @@ Or do it yourself. You need Git and Node.js 22 or newer. There is nothing to ins
 ```bash
 git clone https://github.com/Rhys-Lindmark/20-questions-workshop.git
 cd 20-questions-workshop
-npm run play -- frog
+npm run doctor                # checks Node, the answer table and the recordings
+npm run play -- frog          # a race in the terminal
+npm run app                   # the race page at http://localhost:3420
 ```
 
 That races the provided players on the secret "frog", using recorded answers, so it works without keys. To change a player and see Jev answer it fresh, add a key:
@@ -32,7 +34,7 @@ cp .env.example .env          # paste TYPESAFE_API_KEY (and OPENROUTER_API_KEY t
 | - | - | - | - |
 | 1 · Ask for the move | [starter/level1.js](starter/level1.js) | `npm run play -- frog --player level1` | Calling Jev, and why "What is your next move?" is a weak question |
 | 2 · One judgment, code does the rest | [starter/level2.js](starter/level2.js) (three TODOs) | `npm run score -- --player level2` | Splitting a decision: code's exact moves, state code already knows, one question answerable at a glance |
-| 3 · Race it, make it yours | your Level 2 | `npm run play -- hedgehog`, `npm run score` | Racing Jev against LLMs on turns, time and cost; any noun you type (Jev answers the questions about it first) |
+| 3 · Race it, make it yours | your Level 2, [starter/my-pool.js](starter/my-pool.js) | `npm run app`, `npm run play -- hedgehog`, `npm run build-table -- --mine` | Racing Jev against LLMs on turns, time and cost; any noun you type (Jev answers the questions about it first); adding things and questions (Jev builds their rows of the table) |
 
 My versions are in [solutions/](solutions/), as the `mine1` and `mine2` lanes. Look at them after you've tried.
 
@@ -63,7 +65,11 @@ npm run play -- a                       # three secrets (sets a, b, c)
 npm run play -- hedgehog                # any noun: Jev answers every question about it first
 npm run play -- stapler                 # a planned failure: Jev's answers match hammer's exactly
 npm run score                           # every lane on the same 9 secrets
+npm run app                             # the same races on a page: lanes side by side, a timeline, and a lane for You
+npm run build-table -- --mine           # Level 3: Jev adds your things and questions (starter/my-pool.js) to the table
 ```
+
+On the page, every racer is asked the same question, "Which question splits what's left most evenly?", with the same state (the answers so far and `still_possible`) and the unasked questions as options. Code answers from the table, crosses off and guesses when one thing is left, for every lane alike, You included. Your Level 1 file is the exception: it gets "What is your next move?" over every question and guess, with nothing crossed off. "What Jev saw" under a Jev lane shows its request on the latest turn.
 
 `--live` makes fresh calls, `--replay` uses recordings only (no network).
 

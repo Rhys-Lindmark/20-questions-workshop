@@ -37,3 +37,16 @@ test('Level 2 step by step replays: 225 → 129 → 107 → 106 turns', async ()
     assert.equal(total, turns);
   }
 });
+
+// Level 3's example: Jev's rows for starter/my-pool.js replay, and the new question tells stapler from hammer.
+test('the Level 3 example table builds offline', async () => {
+  const { execFileSync } = await import('node:child_process');
+  const { existsSync, unlinkSync } = await import('node:fs');
+  const mine = new URL('../data/twenty/mine.json', import.meta.url);
+  const had = existsSync(mine);
+  const env = { ...process.env, TYPESAFE_API_KEY: '', OPENROUTER_API_KEY: '', TYPESAFE_KEY_JEV_EVAL: '', OPENROUTER_KEY_JEV_EVAL: '' };
+  try {
+    const out = execFileSync(process.execPath, ['scripts/build-table.js', '--mine'], { cwd: new URL('..', import.meta.url), env, encoding: 'utf8' });
+    assert.match(out, /Every one of the 101 things has its own answers/);
+  } finally { if (!had && existsSync(mine)) unlinkSync(mine); }
+});

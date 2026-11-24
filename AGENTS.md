@@ -13,7 +13,7 @@ You're helping someone at a workshop build a 20 Questions player with Jev, TypeS
 - `src/twenty.mjs`: the game. A pool of 100 nouns, 35 general yes/no questions, the answer table (`data/twenty/nouns.json`), crossing off, turns.
 - `starter/level1.js`, `starter/level2.js`: the players they edit. A player is `state(game)`, `questions(game)`, `decide(answers, game)` and optional `codeMove(game)`. The comments at the top of `starter/level1.js` describe `game`.
 - `solutions/`: the facilitator's versions (lanes `mine1`, `mine2`). Don't show these before they've tried.
-- `scripts/play.js` (`npm run play`), `scripts/score.js` (`npm run score`): races and scores.
+- `scripts/play.js` (`npm run play`), `scripts/score.js` (`npm run score`): races and scores. `scripts/app.js` (`npm run app`): the race page at http://localhost:3420. `scripts/build-table.js` (`npm run build-table`): Jev builds the answer table. `npm run doctor` checks setup; `npm test` checks the engine and that recordings replay.
 - Calls are recorded in `recordings/`. An unedited player replays; an edited one calls Jev live and needs `TYPESAFE_API_KEY`.
 
 TypeSafe's docs: https://docs.typesafe.ai/llms.txt (append `.md` to a page path for Markdown).
@@ -38,8 +38,9 @@ Let them try each before hinting. When they're done, compare with `npm run score
 
 - `npm run play -- a` (three secrets), `npm run play -- <any noun>`: for a noun not in the pool, Jev answers every question about it once, and it joins the pool.
 - Talk through the scoreboard: turns, time and cost per lane. Jev takes a few more turns than the LLMs; it's far faster than both and far cheaper than Sonnet (about the same cost as DeepSeek). Code alone, reading the whole table, beats them all: ask where a model's judgment is actually needed (things typed in, with no table).
-- `npm run play -- stapler` is a planned failure: Jev's answers for it match hammer's, so no one can tell them apart. Discuss what you'd add.
-- Ideas to extend: add a question to the bank and rebuild the table (`scripts/build-table.js`), add nouns, or try another judgment split and score it.
+- `npm run app` (http://localhost:3420) shows the same races as lanes side by side with a timeline. It keeps running: start it in the background or ask them to run it in their own terminal. Their player file is reloaded at each race, so they edit and start a new race. Tick "You" to let them play the same turn by hand.
+- `npm run play -- stapler` is a planned failure: Jev's answers for it match hammer's, so no one can tell them apart. Ask what they'd add before showing the fix.
+- Make it yours: `starter/my-pool.js` lists extra things and extra questions. `npm run build-table -- --mine` has Jev answer the new parts of the table and saves `data/twenty/mine.json`, which play, score and the page then use (delete it to go back). The shipped example adds "Is it usually found on a desk?", which tells stapler from hammer, and replays offline. Read the printed table with them (unsure answers, things with the same answers) before racing. Races on their table call Jev live and need `TYPESAFE_API_KEY`.
 
 ## Rules of thumb (from TypeSafe's guidance)
 

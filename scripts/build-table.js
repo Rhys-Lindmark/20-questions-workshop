@@ -375,7 +375,7 @@ if (!process.argv.includes('--mine')) {
   const allQs = [...baseQs, ...extraQs], allNouns = [...base.items, ...things];
   checkFixes(MY_FIXES, allNouns, allQs);
   const probs = {};
-  if (things.length) { console.log(`Asking Jev all ${allQs.length} questions about your ${things.length} new things…`); Object.assign(probs, await ask(things, allQs)); }
+  if (things.length) { console.log(`Asking Jev all ${allQs.length} questions about your ${things.length} new thing${things.length > 1 ? "s" : ""}…`); Object.assign(probs, await ask(things, allQs)); }
   if (extraQs.length) {
     console.log(`Asking Jev your ${extraQs.length} new question${extraQs.length > 1 ? 's' : ''} about the ${base.items.length} nouns already in the pool…`);
     for (const [n, p] of Object.entries(await ask(base.items, extraQs))) probs[n] = p;

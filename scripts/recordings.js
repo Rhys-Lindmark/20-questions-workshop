@@ -1,7 +1,10 @@
 // Maintainer tool: replays everything the repo promises works offline, and lists recordings
 // nothing uses (left over from older questions or wording). --prune deletes those.
 //   node scripts/recordings.js [--prune]
-import { readdirSync, unlinkSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, unlinkSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { loadTable, prepare, runLane } from '../src/race.js';
 import { call, used, REC } from '../src/calls.js';
 import { oracleTurn } from '../src/twenty.mjs';
@@ -25,6 +28,18 @@ for (const thing of TYPED) {
   const { caseId, extra } = await prepare(data, thing, 'replay');
   for (const laneId of lanes) await run({ caseId, extra, laneId });
 }
+
+// Level 3's example (starter/my-pool.js): the build, and a race on that table. Run as child
+// processes, since the table they use is data/twenty/mine.json. Leaves mine.json as it was.
+const log = join(tmpdir(), `20q-used-${process.pid}.txt`);
+const MINE = new URL('../data/twenty/mine.json', import.meta.url);
+const hadMine = existsSync(MINE);
+const env = { ...process.env, RECORDINGS_USED_LOG: log, TYPESAFE_API_KEY: '', OPENROUTER_API_KEY: '', TYPESAFE_KEY_JEV_EVAL: '', OPENROUTER_KEY_JEV_EVAL: '' };
+const node = (...args) => { try { execFileSync(process.execPath, args, { cwd: new URL('..', import.meta.url), env, stdio: 'pipe' }); } catch (e) { missing++; console.log(`missing: ${args.join(' ')}: ${String(e.stderr || e.stdout).trim().split('\n').pop()}`); } };
+node('scripts/build-table.js', '--mine');
+node('scripts/play.js', 'stapler', '--lanes', 'level2,mine2,deepseek,sonnet', '--replay', '--quiet');
+if (!hadMine && existsSync(MINE)) unlinkSync(MINE);
+if (existsSync(log)) { for (const f of readFileSync(log, 'utf8').split('\n').filter(Boolean)) used.add(f); unlinkSync(log); }
 
 const all = readdirSync(REC).filter(f => f.endsWith('.json'));
 const unused = all.filter(f => !used.has(f));
