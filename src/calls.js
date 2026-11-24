@@ -23,16 +23,19 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 // A recording's file name: the first 24 hex characters of the SHA-256 of the request.
 export const recordingName = req => createHash('sha256').update(JSON.stringify(req)).digest('hex').slice(0, 24) + '.json';
 export const hasRecording = req => existsSync(new URL(recordingName(req), REC));
+// The recordings this process read or wrote (scripts/recordings.js prunes the rest).
+export const used = new Set();
 
 // kind 'jev': req is { model, state, questions }. Returns { answers, input_tokens, ms, replayed }.
 // kind 'llm': req is an OpenRouter chat request. Returns { reply, cost, ms, replayed }.
 export async function call(kind, req, mode = 'auto') {
   const file = new URL(recordingName(req), REC);
+  used.add(recordingName(req));
   if (mode !== 'live' && existsSync(file)) return { ...JSON.parse(readFileSync(file, 'utf8')), replayed: true };
   const key = kind === 'jev' ? process.env.TYPESAFE_API_KEY : process.env.OPENROUTER_API_KEY;
   const keyName = kind === 'jev' ? 'TYPESAFE_API_KEY' : 'OPENROUTER_API_KEY';
   if (mode === 'replay') throw new Error('No recording for this request. Run it once with keys, or use auto mode.');
-  if (!key) throw new Error(`No recording for this request, and no ${keyName} in .env to ask live (see docs/KEYS.md).`);
+  if (!key) throw new Error(`No recording for this request, and no ${keyName} in .env to ask live (see Keys in README.md).`);
   for (let attempt = 0; ; attempt++) {
     const t0 = Date.now();
     const r = await fetch(kind === 'jev' ? JEV_URL : OPENROUTER_URL, {

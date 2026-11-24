@@ -25,7 +25,9 @@ console.log(`20 Questions · ${caseId.replace(/^(one|set|type):/, '').replaceAll
 if (oracle) {
   const yes = Object.entries(oracle.row).filter(([, a]) => a === 'yes').map(([q]) => q);
   console.log(`"${oracle.thing}" isn't in the pool, so Jev answered all ${oracle.questions} questions about it in one request (${oracle.ms} ms, $${oracle.cost.toFixed(5)}${oracle.replayed ? ', recorded' : ''}).`);
-  console.log(`Yes to: ${yes.join(' · ') || 'nothing'}\n`);
+  console.log(`Yes to: ${yes.join(' · ') || 'nothing'}`);
+  if (oracle.sameAs.length) console.log(`Same answers as ${oracle.sameAs.join(', ')}: no question can tell them apart, so a player may need luck.`);
+  console.log('');
 }
 const w = Math.max(...lanes.map(l => LANES[l].label.length)) + 2;
 const results = await runRace({ data, caseId, extra, lanes, mode, emit: e => {

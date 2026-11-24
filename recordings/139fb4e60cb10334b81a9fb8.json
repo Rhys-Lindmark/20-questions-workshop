@@ -1,0 +1,1 @@
+{"reply":"Candidates: hammer, knife, scissors, stapler.\n\n\"Can it cut things?\" splits them into knife and scissors (yes) versus hammer and stapler (no), which is 2/2.\n\n\"Is it usually found in a kitchen?\" would likely single out knife, which is 1/3.\n\n\"Is it a tool?\" is ambiguous.\n\n19","cost":0.003666,"ms":1435,"recorded_at":"2026-11-24T19:12:49.340Z"}

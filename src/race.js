@@ -1,7 +1,7 @@
 // A race: every lane plays the same secrets from the same start, in parallel, one move per
 // call. Used by `npm run play`, `npm run score` and the page (`npm run app`).
 import { existsSync, readFileSync } from 'node:fs';
-import twenty, { view, prep, cleanThing, oracleFor, tableFor } from './twenty.mjs';
+import twenty, { view, prep, cleanThing, oracleFor, tableFor, answer } from './twenty.mjs';
 import { LANES, jevRequest, readJevMove, llmRequest, readLlmMove, jevCost, bestSplit } from './lanes.js';
 import { call } from './calls.js';
 
@@ -41,15 +41,16 @@ export async function prepare(data, input, mode = 'auto') {
   const out = await call('jev', { model: 'jev-1.14.0', state: o.turn.jev.state, questions: o.turn.jev.questions }, mode);
   const d = o.turn.jev.decide(out.answers);
   return { caseId: `type:${o.ask.thing}`, extra: { oracle: d.move },
-    oracle: { thing: o.ask.thing, row: d.move.row, probs: d.probs, questions: Object.keys(o.turn.jev.questions).length, ms: out.ms, cost: jevCost(out), replayed: !!out.replayed } };
+    oracle: { thing: o.ask.thing, row: d.move.row, probs: d.probs, questions: Object.keys(o.turn.jev.questions).length,
+      sameAs: data.items.filter(x => Object.keys(data.questions).every(q => answer(data, x, q) === d.move.row[q])), ms: out.ms, cost: jevCost(out), replayed: !!out.replayed } };
 }
 
 // One lane through every secret. emit gets { type: 'step' | 'done' | 'error', … }.
 // pace: wait out a replayed call's recorded time, so a replayed race looks like the live one.
-export async function runLane({ data, caseId, extra, laneId, mode = 'auto', pace = false, emit = () => {}, signal, withRequest = false }) {
+export async function runLane({ data, caseId, extra, laneId, player: given, mode = 'auto', pace = false, emit = () => {}, signal, withRequest = false }) {
   const lane = LANES[laneId];
   if (!lane) throw new Error(`No lane "${laneId}". Lanes: ${Object.keys(LANES).join(', ')}`);
-  const player = lane.kind === 'jev' ? await loadPlayer(laneId) : null;
+  const player = lane.kind === 'jev' ? given ?? await loadPlayer(laneId) : null; // given: a player module passed in directly
   let s = twenty.init(data, caseId, extra);
   const totals = { steps: 0, ms: 0, cost: 0, replayed: 0, calls: 0 };
   while (!twenty.done(s) && totals.steps < 100) {

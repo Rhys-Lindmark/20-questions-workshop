@@ -6,10 +6,11 @@
   "type": "module",
   "engines": { "node": ">=22" },
   "scripts": {
+    "doctor": "node scripts/doctor.js",
     "play": "node scripts/play.js",
     "score": "node scripts/score.js",
     "build-table": "node scripts/build-table.js",
-    "test": "node --test test/"
+    "test": "node --test test/*.test.js"
   },
   "license": "MIT"
 }
